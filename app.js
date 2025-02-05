@@ -1,5 +1,5 @@
 async function fetchTokenData(tokenAddress) {
-    const url = `https://pro-api.solscan.io/v1.0/token/info?tokenAddress=${tokenAddress}`;
+    const url = `https://solscan.io/token/info?tokenAddress=${tokenAddress}`;
 
     try {
         const response = await fetch(url);
