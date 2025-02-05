@@ -12,7 +12,7 @@ async function fetchTokenData() {
 
     try {
         // Fetch token data from Solscan API
-        const response = await fetch(`https://api.solscan.io/token/meta?tokenAddress=${tokenAddress}`);
+        const response = await fetch(`https://public-api.solscan.io/token/meta?tokenAddress=${tokenAddress}`);
         const data = await response.json();
 
         // Handle errors (if the token is not found or API fails)
