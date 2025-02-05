@@ -1,58 +1,79 @@
-async function fetchOHLCVData() {
-  try {
-    // URL with the specified parameters
-    const url = 'https://multichain-api.birdeye.so/solana/amm/ohlcv_v2?addr=8mkUarPCHebMp2WjJF5jxnL3pZNGvbd3Bjb2n1xPpump&cur=usd&res=15m&outliers=false&cb=300&mc=false&to=1738732500';
+async function fetchTokenData() {
+  const tokenAddress = document.getElementById('tokenAddress').value.trim();
+  if (!tokenAddress) {
+    alert('Please enter a token address.');
+    return;
+  }
+  
+  // 1. Fetch OHLCV Data from Birdeye API (Market Data)
+  const ohlcvUrl = `https://multichain-api.birdeye.so/solana/amm/ohlcv_v2?addr=${tokenAddress}&cur=usd&res=15m&outliers=false&cb=300&mc=false&to=1738732500`;
 
-    // Fetch the data from the API
-    const response = await fetch(url);
-    
-    // Parse the response as JSON
+  try {
+    const response = await fetch(ohlcvUrl);
     const data = await response.json();
 
-    // Check if the response contains OHLCV data
     if (data && data.data) {
-      // Loop through the data and extract OHLCV values
-      const ohlcvData = data.data.map(item => {
-        return {
-          timestamp: new Date(item.timestamp * 1000).toLocaleString(), // Convert timestamp to human-readable format
-          open: item.open,
-          high: item.high,
-          low: item.low,
-          close: item.close,
-          volume: item.volume
-        };
-      });
+      const ohlcvData = data.data.map(item => ({
+        timestamp: new Date(item.timestamp * 1000).toLocaleString(),
+        open: item.open,
+        high: item.high,
+        low: item.low,
+        close: item.close,
+        volume: item.volume,
+      }));
 
-      // Log the extracted OHLCV data for debugging
-      console.log(ohlcvData);
-
-      // Display the OHLCV data on the page
-      let ohlcvHtml = '<h3>OHLCV Data (15m Intervals)</h3>';
-      ohlcvHtml += '<table><tr><th>Timestamp</th><th>Open</th><th>High</th><th>Low</th><th>Close</th><th>Volume</th></tr>';
-
-      // Loop through the OHLCV data and display each value in a table row
+      let ohlcvHtml = '';
       ohlcvData.forEach(item => {
         ohlcvHtml += `<tr>
-                        <td>${item.timestamp}</td>
-                        <td>${item.open}</td>
-                        <td>${item.high}</td>
-                        <td>${item.low}</td>
-                        <td>${item.close}</td>
-                        <td>${item.volume}</td>
-                      </tr>`;
+          <td>${item.timestamp}</td>
+          <td>${item.open}</td>
+          <td>${item.high}</td>
+          <td>${item.low}</td>
+          <td>${item.close}</td>
+          <td>${item.volume}</td>
+        </tr>`;
       });
 
-      ohlcvHtml += '</table>';
-
-      // Insert the OHLCV data into the 'ohlcv-data' div
-      document.getElementById('ohlcv-data').innerHTML = ohlcvHtml;
-    } else {
-      console.error('OHLCV data not found');
+      document.getElementById('ohlcv-table-body').innerHTML = ohlcvHtml;
+      document.getElementById('ohlcv-data').style.display = 'block';
     }
   } catch (error) {
     console.error('Error fetching OHLCV data:', error);
   }
-}
 
-// Call the function to fetch OHLCV data
-fetchOHLCVData();
+  // 2. Fetch Token Price and Market Cap from Birdeye API
+  const tokenInfoUrl = `https://multichain-api.birdeye.so/solana/amm/market_data?addr=${tokenAddress}&cur=usd`;
+
+  try {
+    const infoResponse = await fetch(tokenInfoUrl);
+    const infoData = await infoResponse.json();
+
+    if (infoData && infoData.data) {
+      const price = infoData.data.price;
+      const marketCap = infoData.data.market_cap;
+
+      // Display Price and Market Cap (assuming the placeholders are already in your HTML)
+      document.getElementById('market-cap').textContent = "$" + marketCap.toLocaleString();
+      document.getElementById('price').textContent = "$" + price.toFixed(2);
+    } else {
+      alert('Could not fetch token data.');
+    }
+  } catch (error) {
+    console.error('Error fetching token data from Birdeye API:', error);
+  }
+
+  // 3. Safety Score (simulated for now)
+  const safetyScore = Math.floor(Math.random() * 100);
+  document.getElementById('safety-score').textContent = safetyScore + "/100";
+  const scoreBar = document.getElementById('score-bar-fill');
+  if (safetyScore >= 80) {
+    scoreBar.className = 'good';
+    scoreBar.style.width = `${safetyScore}%`;
+  } else if (safetyScore >= 50) {
+    scoreBar.className = 'average';
+    scoreBar.style.width = `${safetyScore}%`;
+  } else {
+    scoreBar.className = 'bad';
+    scoreBar.style.width = `${safetyScore}%`;
+  }
+}
