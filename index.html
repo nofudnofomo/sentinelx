@@ -1,12 +1,207 @@
-<input type="text" id="tokenInput" placeholder="Enter token address">
-<button onclick="fetchTokenData(document.getElementById('tokenInput').value)">Get Token Info</button>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SentinelX Token Analyzer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1c1c1c;
+      color: white;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      flex-direction: column;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+    .container {
+      width: 80%;
+      max-width: 1200px;
+      text-align: center;
+    }
+    .input-container {
+      margin-bottom: 30px;
+    }
+    input[type="text"] {
+      padding: 10px;
+      font-size: 1rem;
+      width: 70%;
+      margin-right: 10px;
+      border-radius: 5px;
+      border: 1px solid #333;
+      background-color: #2e2e2e;
+      color: white;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      background-color: #3498db;
+      border: none;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    .token-info, .safety-info {
+      margin-top: 20px;
+      background-color: #333;
+      padding: 20px;
+      border-radius: 5px;
+    }
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #444;
+      text-align: center;
+    }
+    th {
+      background-color: #555;
+    }
+    .score-bar {
+      height: 15px;
+      width: 100%;
+      background-color: #444;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+    .score-bar span {
+      height: 100%;
+      display: block;
+      border-radius: 5px;
+    }
+    .good { background-color: green; }
+    .average { background-color: orange; }
+    .bad { background-color: red; }
+  </style>
+</head>
+<body>
 
-<div id="tokenInfo">
-    <p><strong>Name:</strong> <span id="tokenName">-</span></p>
-    <p><strong>Symbol:</strong> <span id="tokenSymbol">-</span></p>
-    <p><strong>Market Cap:</strong> <span id="marketCap">-</span></p>
-    <p><strong>Circulating Supply:</strong> <span id="supply">-</span></p>
-</div>
+  <div class="container">
+    <h1>SentinelX Token Analyzer</h1>
+    
+    <!-- Input for token address -->
+    <div class="input-container">
+      <input type="text" id="tokenAddress" placeholder="Enter Token Address" />
+      <button onclick="fetchTokenData()">Fetch Token Data</button>
+    </div>
+    
+    <!-- Token Data Section -->
+    <div id="token-info" class="token-info" style="display:none;">
+      <h3>Token Information</h3>
+      <p><strong>Token Address:</strong> <span id="token-address"></span></p>
+      <p><strong>Market Cap:</strong> <span id="market-cap"></span></p>
+      <p><strong>Price (USD):</strong> <span id="price"></span></p>
+    </div>
+    
+    <!-- Safety Score Section -->
+    <div id="safety-info" class="safety-info" style="display:none;">
+      <h3>Safety Score</h3>
+      <p><strong>Safety Score:</strong> <span id="safety-score"></span></p>
+      <div id="safety-bar" class="score-bar">
+        <span id="score-bar-fill" class="good" style="width: 100%;"></span>
+      </div>
+    </div>
+    
+    <!-- OHLCV Data Table -->
+    <div id="ohlcv-data" class="token-info" style="display:none;">
+      <h3>OHLCV Data (15m Intervals)</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>Open</th>
+            <th>High</th>
+            <th>Low</th>
+            <th>Close</th>
+            <th>Volume</th>
+          </tr>
+        </thead>
+        <tbody id="ohlcv-table-body">
+          <!-- OHLCV data rows will go here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-<p id="errorMessage" style="color: red;"></p>
+  <script>
+    async function fetchTokenData() {
+      const tokenAddress = document.getElementById('tokenAddress').value.trim();
+      if (!tokenAddress) {
+        alert('Please enter a token address.');
+        return;
+      }
+      
+      // Fetch OHLCV Data
+      const ohlcvUrl = `https://multichain-api.birdeye.so/solana/amm/ohlcv_v2?addr=${tokenAddress}&cur=usd&res=15m&outliers=false&cb=300&mc=false&to=1738732500`;
+      
+      try {
+        const response = await fetch(ohlcvUrl);
+        const data = await response.json();
+        
+        if (data && data.data) {
+          const ohlcvData = data.data.map(item => ({
+            timestamp: new Date(item.timestamp * 1000).toLocaleString(),
+            open: item.open,
+            high: item.high,
+            low: item.low,
+            close: item.close,
+            volume: item.volume,
+          }));
+          
+          let ohlcvHtml = '';
+          ohlcvData.forEach(item => {
+            ohlcvHtml += `<tr>
+              <td>${item.timestamp}</td>
+              <td>${item.open}</td>
+              <td>${item.high}</td>
+              <td>${item.low}</td>
+              <td>${item.close}</td>
+              <td>${item.volume}</td>
+            </tr>`;
+          });
+          document.getElementById('ohlcv-table-body').innerHTML = ohlcvHtml;
+          document.getElementById('ohlcv-data').style.display = 'block';
+        }
+      } catch (error) {
+        console.error('Error fetching OHLCV data:', error);
+      }
 
+      // Fake Token Info (replace with real data fetch from an API if you have one)
+      document.getElementById('token-address').textContent = tokenAddress;
+      document.getElementById('market-cap').textContent = "$" + (Math.random() * 1000000).toFixed(2);
+      document.getElementById('price').textContent = "$" + (Math.random() * 100).toFixed(2);
+
+      // Fake Safety Score (replace with real data or calculation)
+      const safetyScore = Math.floor(Math.random() * 100);
+      document.getElementById('safety-score').textContent = safetyScore + "/100";
+      const scoreBar = document.getElementById('score-bar-fill');
+      if (safetyScore >= 80) {
+        scoreBar.className = 'good';
+        scoreBar.style.width = '100%';
+      } else if (safetyScore >= 50) {
+        scoreBar.className = 'average';
+        scoreBar.style.width = '60%';
+      } else {
+        scoreBar.className = 'bad';
+        scoreBar.style.width = '30%';
+      }
+      
+      document.getElementById('safety-info').style.display = 'block';
+      document.getElementById('token-info').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
