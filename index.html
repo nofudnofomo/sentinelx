@@ -16,7 +16,12 @@
       </ul>
     </nav>
   </header>
-  
+  <div>
+  <label for="tokenAddress">Enter Solana Token Address:</label>
+  <input type="text" id="tokenAddress" placeholder="Token Address">
+  <button onclick="fetchTokenData()">Get Token Data</button>
+</div>
+<div id="tokenDetails"></div>
   <section id="analysis">
     <h2>Token Safety Analysis</h2>
     <form id="token-form">
