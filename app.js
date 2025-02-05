@@ -10,8 +10,8 @@ async function fetchTokenData() {
     document.getElementById('safetyScore').innerHTML = '';
 
     try {
-        // Fetch token data from Solscan API
-        const response = await fetch(`https://api.solscan.io/token/${tokenAddress}`);
+        // Use the Solscan API to fetch token data
+        const response = await fetch(`https://api.solscan.io/token/meta?tokenAddress=${tokenAddress}`);
         const data = await response.json();
 
         if (data.error) {
@@ -19,6 +19,24 @@ async function fetchTokenData() {
             return;
         }
 
+        // Display token details
+        const detailsDiv = document.getElementById('tokenDetails');
+        detailsDiv.innerHTML = `
+            <h3>Token Name: ${data.data.name}</h3>
+            <p><strong>Symbol:</strong> ${data.data.symbol}</p>
+            <p><strong>Market Cap:</strong> ${data.data.marketCap}</p>
+            <p><strong>24h Volume:</strong> ${data.data.volume}</p>
+            <p><strong>Holders:</strong> ${data.data.holders}</p>
+        `;
+
+        // Calculate and display safety score
+        const safetyScore = calculateSafetyScore(data.data);
+        displaySafetyScore(safetyScore);
+    } catch (error) {
+        console.error("Error fetching token data:", error);
+        document.getElementById('tokenDetails').innerHTML = `<p>Error: Failed to fetch token data. Please try again later.</p>`;
+    }
+}
         // Display token details
         const detailsDiv = document.getElementById('tokenDetails');
         detailsDiv.innerHTML = `
