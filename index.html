@@ -1,98 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Solana Token Info</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #121212;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-    input {
-      padding: 10px;
-      margin: 10px;
-      border-radius: 5px;
-      border: none;
-      font-size: 16px;
-    }
-    button {
-      padding: 10px 20px;
-      margin: 10px;
-      background-color: #00ff00;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #00cc00;
-    }
-    .result {
-      margin-top: 20px;
-    }
-    .loading {
-      color: #ffcc00;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centered Photo with Matching Background</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            background-color: #000;
+        }
+        .container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        img {
+            max-width: 80vw;
+            max-height: 80vh;
+            border-radius: 10px;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+        }
+    </style>
 </head>
 <body>
-
-  <h1>Solana Token Info</h1>
-  <p>Enter the Solana token address to get information:</p>
-
-  <input type="text" id="tokenAddress" placeholder="Enter Solana Token Address">
-  <button onclick="fetchTokenData()">Get Token Info</button>
-
-  <div class="result" id="result"></div>
-
-  <script>
-    function fetchTokenData() {
-      const tokenAddress = document.getElementById('tokenAddress').value.trim();
-      const resultElement = document.getElementById('result');
-
-      // Validate the input (ensure it is not empty and has the correct format)
-      if (!tokenAddress || tokenAddress.length !== 44) {
-        resultElement.innerHTML = 'Please enter a valid Solana token address (44 characters).';
-        return;
-      }
-
-      // Clear previous result and show loading message
-      resultElement.innerHTML = '<p class="loading">Loading...</p>';
-
-      // Construct the API URL with the provided token address
-      const proxyUrl = "https://cors-anywhere.herokuapp.com/"; // CORS proxy
-      const apiUrl = `https://multichain-api.birdeye.so/solana/amm/ohlcv_v2?addr=${tokenAddress}&cur=usd&res=15m&outliers=false&cb=300&mc=false&to=1738732500`;
-
-      // Make the API call with fetch
-      fetch(proxyUrl + apiUrl)
-        .then(response => {
-          console.log('API Response:', response);  // Log the response for debugging
-          return response.json();
-        })
-        .then(data => {
-          console.log('API Data:', data);  // Log the actual data
-
-          if (data.success) {
-            resultElement.innerHTML = `
-              <h3>Token Info:</h3>
-              <p><strong>Market Cap:</strong> ${data.marketCap} USD</p>
-              <p><strong>Price:</strong> ${data.price} USD</p>
-              <p><strong>24h Volume:</strong> ${data.volume24h} USD</p>
-              <p><strong>24h Change:</strong> ${data.priceChange24h}%</p>
-            `;
-          } else {
-            resultElement.innerHTML = `<p class="loading">Error: ${data.message}</p>`;
-          }
-        })
-        .catch(error => {
-          console.error('Fetch Error:', error);  // Log any fetch errors for troubleshooting
-          resultElement.innerHTML = `<p class="loading">Error fetching data: ${error}</p>`;
-        });
-    }
-  </script>
-
+    <div class="container">
+        <img id="photo" src="https://imgur.com/a/BEcHocy" alt="Centered Image">
+" alt="Centered Image">
+    </div>
+    
+    <script>
+        window.onload = function() {
+            let img = document.getElementById("photo");
+            let canvas = document.createElement("canvas");
+            let ctx = canvas.getContext("2d");
+            
+            img.onload = function() {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0, 1, 1);
+                let pixel = ctx.getImageData(0, 0, 1, 1).data;
+                document.body.style.backgroundColor = `rgb(${pixel[0]}, ${pixel[1]}, ${pixel[2]})`;
+            };
+        };
+    </script>
 </body>
 </html>
+
