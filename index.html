@@ -3,204 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Token Info</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #1a1a1a;
-      color: #fff;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      max-width: 800px;
-      margin: 50px auto;
-      padding: 20px;
-      background-color: #333;
-      border-radius: 8px;
-    }
-    h1 {
-      text-align: center;
-    }
-    input, button {
-      padding: 10px;
-      font-size: 16px;
-      width: 100%;
-      margin-bottom: 20px;
-    }
-    .card {
-      margin-bottom: 20px;
-      background-color: #444;
-      padding: 15px;
-      border-radius: 8px;
-    }
-    .card h3 {
-      margin: 0 0 10px;
-    }
-    .card p {
-      margin: 5px 0;
-    }
-    .table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    .table th, .table td {
-      padding: 10px;
-      border: 1px solid #555;
-      text-align: center;
-    }
-    .button-container {
-      display: flex;
-      justify-content: center;
-    }
-    #score-bar-fill {
-      height: 10px;
-      width: 0%;
-      background-color: green;
-      transition: width 1s;
-    }
-    .good {
-      background-color: green;
-    }
-    .average {
-      background-color: orange;
-    }
-    .bad {
-      background-color: red;
-    }
-  </style>
+  <title>Token Info Fetch</title>
 </head>
 <body>
-  <div class="container">
-    <h1>Solana Token Info</h1>
-    <input type="text" id="tokenAddress" placeholder="Enter Token Address" />
-    <button onclick="fetchTokenData()">Get Token Info</button>
-
-    <div id="token-info">
-      <div class="card">
-        <h3>Market Info</h3>
-        <p><strong>Price:</strong> <span id="price">Loading...</span></p>
-        <p><strong>Market Cap:</strong> <span id="market-cap">Loading...</span></p>
-      </div>
-
-      <div class="card">
-        <h3>Safety Score</h3>
-        <p><strong>Score:</strong> <span id="safety-score">Loading...</span>/100</p>
-        <div id="score-bar">
-          <div id="score-bar-fill"></div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>OHLCV Data</h3>
-        <table id="ohlcv-table" class="table">
-          <thead>
-            <tr>
-              <th>Timestamp</th>
-              <th>Open</th>
-              <th>High</th>
-              <th>Low</th>
-              <th>Close</th>
-              <th>Volume</th>
-            </tr>
-          </thead>
-          <tbody id="ohlcv-table-body"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+  <h1>Enter Token Address</h1>
+  <input type="text" id="tokenAddress" placeholder="Token Address">
+  <button onclick="fetchTokenData()">Fetch Data</button>
 
   <script>
-   async function fetchTokenData() {
-  const tokenAddress = document.getElementById('tokenAddress').value.trim();
-  if (!tokenAddress) {
-    alert('Please enter a token address.');
-    return;
-  }
+    function fetchTokenData() {
+      const tokenAddress = document.getElementById('tokenAddress').value.trim();
+      const url = `https://multichain-api.birdeye.so/solana/amm/ohlcv_v2?addr=${tokenAddress}&cur=usd&res=15m&outliers=false&cb=300&mc=false&to=1738732500`;
 
-  // 1. Fetch OHLCV Data from Birdeye API (Market Data)
-  const ohlcvUrl = `https://multichain-api.birdeye.so/solana/amm/ohlcv_v2?addr=${tokenAddress}&cur=usd&res=15m&outliers=false&cb=300&mc=false&to=1738732500`;
-
-  try {
-    const response = await fetch(ohlcvUrl);
-    const data = await response.json();
-
-    if (data && data.data) {
-      const ohlcvData = data.data.map(item => ({
-        timestamp: new Date(item.timestamp * 1000).toLocaleString(),
-        open: item.open,
-        high: item.high,
-        low: item.low,
-        close: item.close,
-        volume: item.volume,
-      }));
-
-      let ohlcvHtml = '';
-      ohlcvData.forEach(item => {
-        ohlcvHtml += `<tr>
-          <td>${item.timestamp}</td>
-          <td>${item.open}</td>
-          <td>${item.high}</td>
-          <td>${item.low}</td>
-          <td>${item.close}</td>
-          <td>${item.volume}</td>
-        </tr>`;
-      });
-
-      document.getElementById('ohlcv-table-body').innerHTML = ohlcvHtml;
-    } else {
-      console.error('No OHLCV data found');
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);  // Log the data to the console for now
+        })
+        .catch(error => {
+          console.error("Error fetching data:", error);
+        });
     }
-  } catch (error) {
-    console.error('Error fetching OHLCV data:', error);
-  }
-
-  // 2. Fetch Token Price and Market Cap from Birdeye API
-  const tokenInfoUrl = `https://multichain-api.birdeye.so/solana/amm/market_data?addr=${tokenAddress}&cur=usd`;
-
-  try {
-    const infoResponse = await fetch(tokenInfoUrl);
-    const infoData = await infoResponse.json();
-
-    if (infoData && infoData.data) {
-      const price = infoData.data.price;
-      const marketCap = infoData.data.market_cap;
-
-      // Check if price and market cap exist in the data
-      if (price && marketCap) {
-        document.getElementById('market-cap').textContent = "$" + marketCap.toLocaleString();
-        document.getElementById('price').textContent = "$" + price.toFixed(2);
-      } else {
-        console.error('Market data is missing');
-        document.getElementById('market-cap').textContent = 'Data not available';
-        document.getElementById('price').textContent = 'Data not available';
-      }
-    } else {
-      console.error('Invalid token data or no data found');
-      document.getElementById('market-cap').textContent = 'Error fetching data';
-      document.getElementById('price').textContent = 'Error fetching data';
-    }
-  } catch (error) {
-    console.error('Error fetching token data from Birdeye API:', error);
-    document.getElementById('market-cap').textContent = 'Error fetching data';
-    document.getElementById('price').textContent = 'Error fetching data';
-  }
-
-  // 3. Safety Score (simulated for now)
-  const safetyScore = Math.floor(Math.random() * 100);
-  document.getElementById('safety-score').textContent = safetyScore + "/100";
-  const scoreBar = document.getElementById('score-bar-fill');
-  if (safetyScore >= 80) {
-    scoreBar.className = 'good';
-    scoreBar.style.width = `${safetyScore}%`;
-  } else if (safetyScore >= 50) {
-    scoreBar.className = 'average';
-    scoreBar.style.width = `${safetyScore}%`;
-  } else {
-    scoreBar.className = 'bad';
-    scoreBar.style.width = `${safetyScore}%`;
-  }
-}
   </script>
 </body>
 </html>
