@@ -77,3 +77,6 @@ async function fetchTokenData() {
     scoreBar.style.width = `${safetyScore}%`;
   }
 }
+2m
+
+
