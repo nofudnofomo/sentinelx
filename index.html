@@ -3,42 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>SentinelX - Token Safety and Analysis</title>
-    <link rel="stylesheet" href="styles.css">
-    <script defer src="app.js"></script>
+    <title>Solana Token Info</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #00ff00;
+        }
+
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            font-size: 16px;
+        }
+
+        #tokenDetails, #safetyScore {
+            background-color: #333333;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            border: 1px solid #444444;
+        }
+
+        button {
+            background-color: #0066cc;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #004d99;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>SentinelX - Solana Token Analysis</h1>
-        <p>Get token data and safety scores for Solana tokens in real-time.</p>
-    </header>
+    <h1>Solana Token Info Fetcher</h1>
 
-    <section class="token-input">
-        <label for="tokenAddress">Enter Solana Token Address:</label>
-        <input type="text" id="tokenAddress" placeholder="Token Address" />
-        <button onclick="fetchTokenData()">Get Token Data</button>
-    </section>
+    <input type="text" id="tokenAddress" placeholder="Enter Token Address" size="50">
+    <button onclick="fetchTokenData()">Fetch Token Data</button>
 
-    <section class="token-details">
-        <h2>Token Details</h2>
-        <div id="tokenDetails">
-            <!-- Token data will appear here -->
-        </div>
-    </section>
+    <div id="tokenDetails">
+        <!-- Token details will be shown here -->
+    </div>
 
-    <section class="safety-score">
-        <h2>Safety Score</h2>
-        <ul id="safetyScore">
-            <!-- Safety score bullets will appear here -->
-        </ul>
-    </section>
+    <div id="safetyScore">
+        <!-- Safety score will be displayed here -->
+    </div>
 
-    <footer>
-        <p>SentinelX - Powered by Solana</p>
-    </footer>
+    <script src="app.js"></script>
 </body>
 </html>
-Now
 
 
