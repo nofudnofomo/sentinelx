@@ -28,3 +28,27 @@ topTokens.forEach(token => {
   li.textContent = `${token.name} - Safety Score: ${token.score}`;
   topTokensList.appendChild(li);
 });
+async function fetchTokenData() {
+  const tokenAddress = document.getElementById('tokenAddress').value;
+  if (!tokenAddress) {
+    alert('Please enter a token address');
+    return;
+  }
+
+  // Fetch token data from Solscan API
+  const response = await fetch(`https://api.solscan.io/token/${tokenAddress}`);
+  const data = await response.json();
+
+  // Display token details on the page
+  const detailsDiv = document.getElementById('tokenDetails');
+  detailsDiv.innerHTML = `
+    <h3>Token Name: ${data.name}</h3>
+    <p>Symbol: ${data.symbol}</p>
+    <p>Market Cap: ${data.marketCap}</p>
+    <p>Volume (24h): ${data.volume}</p>
+    <p>Holders: ${data.holders}</p>
+  `;
+}
+Now
+
+
