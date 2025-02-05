@@ -1,17 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solana Token Info</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: #ffffff;
-            text-align: center;
-            padding: 20px;
-        }
 <input type="text" id="tokenInput" placeholder="Enter token address">
 <button onclick="fetchTokenData(document.getElementById('tokenInput').value)">Get Token Info</button>
 
@@ -23,51 +9,4 @@
 </div>
 
 <p id="errorMessage" style="color: red;"></p>
-        h1 {
-            color: #00ff00;
-        }
-
-        input, button {
-            padding: 10px;
-            margin: 10px;
-            font-size: 16px;
-        }
-
-        #tokenDetails, #safetyScore {
-            background-color: #333333;
-            padding: 15px;
-            margin-top: 20px;
-            border-radius: 5px;
-            border: 1px solid #444444;
-        }
-
-        button {
-            background-color: #0066cc;
-            color: white;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #004d99;
-        }
-    </style>
-</head>
-<body>
-    <h1>Solana Token Info Fetcher</h1>
-
-    <input type="text" id="tokenAddress" placeholder="Enter Token Address" size="50">
-    <button onclick="fetchTokenData()">Fetch Token Data</button>
-
-    <div id="tokenDetails">
-        <!-- Token details will be shown here -->
-    </div>
-
-    <div id="safetyScore">
-        <!-- Safety score will be displayed here -->
-    </div>
-
-    <script src="app.js"></script>
-</body>
-</html>
-
 
