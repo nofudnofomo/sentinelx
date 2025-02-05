@@ -3,27 +3,89 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Token Info Fetch</title>
+  <title>Solana Token Info</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    input {
+      padding: 10px;
+      margin: 10px;
+      border-radius: 5px;
+      border: none;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      background-color: #00ff00;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #00cc00;
+    }
+    .result {
+      margin-top: 20px;
+    }
+    .loading {
+      color: #ffcc00;
+    }
+  </style>
 </head>
 <body>
-  <h1>Enter Token Address</h1>
-  <input type="text" id="tokenAddress" placeholder="Token Address">
-  <button onclick="fetchTokenData()">Fetch Data</button>
+
+  <h1>Solana Token Info</h1>
+  <p>Enter the Solana token address to get information:</p>
+
+  <input type="text" id="tokenAddress" placeholder="Enter Solana Token Address">
+  <button onclick="fetchTokenData()">Get Token Info</button>
+
+  <div class="result" id="result"></div>
 
   <script>
     function fetchTokenData() {
       const tokenAddress = document.getElementById('tokenAddress').value.trim();
-      const url = `https://multichain-api.birdeye.so/solana/amm/ohlcv_v2?addr=${tokenAddress}&cur=usd&res=15m&outliers=false&cb=300&mc=false&to=1738732500`;
+      const resultElement = document.getElementById('result');
 
-      fetch(url)
+      if (!tokenAddress) {
+        resultElement.innerHTML = 'Please enter a valid Solana token address.';
+        return;
+      }
+
+      // Clear previous result and show loading message
+      resultElement.innerHTML = '<p class="loading">Loading...</p>';
+
+      // Construct the API URL with the provided token address
+      const proxyUrl = "https://cors-anywhere.herokuapp.com/"; // CORS proxy
+      const apiUrl = `https://multichain-api.birdeye.so/solana/amm/ohlcv_v2?addr=${tokenAddress}&cur=usd&res=15m&outliers=false&cb=300&mc=false&to=1738732500`;
+
+      // Make the API call with fetch
+      fetch(proxyUrl + apiUrl)
         .then(response => response.json())
         .then(data => {
-          console.log(data);  // Log the data to the console for now
+          if (data.success) {
+            resultElement.innerHTML = `
+              <h3>Token Info:</h3>
+              <p><strong>Market Cap:</strong> ${data.marketCap} USD</p>
+              <p><strong>Price:</strong> ${data.price} USD</p>
+              <p><strong>24h Volume:</strong> ${data.volume24h} USD</p>
+              <p><strong>24h Change:</strong> ${data.priceChange24h}%</p>
+            `;
+          } else {
+            resultElement.innerHTML = `<p class="loading">Error: ${data.message}</p>`;
+          }
         })
         .catch(error => {
-          console.error("Error fetching data:", error);
+          resultElement.innerHTML = `<p class="loading">Error fetching data: ${error}</p>`;
         });
     }
   </script>
+
 </body>
 </html>
