@@ -53,8 +53,9 @@
       const tokenAddress = document.getElementById('tokenAddress').value.trim();
       const resultElement = document.getElementById('result');
 
-      if (!tokenAddress) {
-        resultElement.innerHTML = 'Please enter a valid Solana token address.';
+      // Validate the input (ensure it is not empty and has the correct format)
+      if (!tokenAddress || tokenAddress.length !== 44) {
+        resultElement.innerHTML = 'Please enter a valid Solana token address (44 characters).';
         return;
       }
 
@@ -67,8 +68,13 @@
 
       // Make the API call with fetch
       fetch(proxyUrl + apiUrl)
-        .then(response => response.json())
+        .then(response => {
+          console.log('API Response:', response);  // Log the response for debugging
+          return response.json();
+        })
         .then(data => {
+          console.log('API Data:', data);  // Log the actual data
+
           if (data.success) {
             resultElement.innerHTML = `
               <h3>Token Info:</h3>
@@ -82,6 +88,7 @@
           }
         })
         .catch(error => {
+          console.error('Fetch Error:', error);  // Log any fetch errors for troubleshooting
           resultElement.innerHTML = `<p class="loading">Error fetching data: ${error}</p>`;
         });
     }
