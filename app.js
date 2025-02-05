@@ -1,5 +1,5 @@
 async function fetchTokenData(tokenAddress) {
-    const url = `https://solscan.io/token/info?tokenAddress=${tokenAddress}`;
+    const url = `https://www.birdeye.so/token/info?tokenAddress=${tokenAddress}`;
 
     try {
         const response = await fetch(url);
