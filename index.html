@@ -12,7 +12,17 @@
             text-align: center;
             padding: 20px;
         }
+<input type="text" id="tokenInput" placeholder="Enter token address">
+<button onclick="fetchTokenData(document.getElementById('tokenInput').value)">Get Token Info</button>
 
+<div id="tokenInfo">
+    <p><strong>Name:</strong> <span id="tokenName">-</span></p>
+    <p><strong>Symbol:</strong> <span id="tokenSymbol">-</span></p>
+    <p><strong>Market Cap:</strong> <span id="marketCap">-</span></p>
+    <p><strong>Circulating Supply:</strong> <span id="supply">-</span></p>
+</div>
+
+<p id="errorMessage" style="color: red;"></p>
         h1 {
             color: #00ff00;
         }
