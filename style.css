@@ -1,54 +1,96 @@
+/* General reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-  font-family: Arial, sans-serif;
-  background-color: #121212;
-  color: #fff;
-  margin: 0;
-  padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #181818;
+    color: #fff;
+    padding: 20px;
 }
 
 header {
-  background-color: #1f1f1f;
-  padding: 20px;
-  text-align: center;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
 header h1 {
-  margin: 0;
+    font-size: 2.5rem;
+    color: #00e5ff;
 }
 
-nav ul {
-  list-style-type: none;
-  padding: 0;
+header p {
+    font-size: 1.2rem;
+    color: #b0b0b0;
 }
 
-nav ul li {
-  display: inline;
-  margin: 0 10px;
+.token-input {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
 }
 
-nav ul li a {
-  color: #00ff00;
-  text-decoration: none;
+.token-input input {
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 2px solid #00e5ff;
+    color: #333;
 }
 
-section {
-  margin: 20px;
+.token-input button {
+    padding: 10px 20px;
+    background-color: #00e5ff;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
 }
 
-button {
-  background-color: #00ff00;
-  color: #121212;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
+.token-input button:hover {
+    background-color: #00b3cc;
 }
 
-button:hover {
-  background-color: #007700;
+.token-details, .safety-score {
+    margin: 30px 0;
+    background-color: #222222;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.token-details h2, .safety-score h2 {
+    font-size: 2rem;
+    color: #00e5ff;
+}
+
+#tokenDetails {
+    font-size: 1.2rem;
+    margin-top: 10px;
+}
+
+.safety-score ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.safety-score li {
+    font-size: 1.2rem;
+    margin: 10px 0;
 }
 
 footer {
-  text-align: center;
-  padding: 10px;
-  background-color: #1f1f1f;
+    text-align: center;
+    margin-top: 50px;
+    font-size: 1rem;
+    color: #b0b0b0;
 }
+
+footer p {
+    margin: 10px 0;
+}
+Now
